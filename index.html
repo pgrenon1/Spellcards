@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 5E Spell Cards</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="controls">
+        <div class="filter-controls">
+            <input type="text" id="searchInput" placeholder="Search spells...">
+            <select id="levelFilter">
+                <option value="all">All Levels</option>
+                <option value="0">Cantrips</option>
+                <option value="1">1st Level</option>
+                <option value="2">2nd Level</option>
+                <option value="3">3rd Level</option>
+                <option value="4">4th Level</option>
+                <option value="5">5th Level</option>
+                <option value="6">6th Level</option>
+                <option value="7">7th Level</option>
+                <option value="8">8th Level</option>
+                <option value="9">9th Level</option>
+            </select>
+            <select id="schoolFilter">
+                <option value="all">All Schools</option>
+                <option value="A">Abjuration</option>
+                <option value="C">Conjuration</option>
+                <option value="D">Divination</option>
+                <option value="E">Enchantment</option>
+                <option value="V">Evocation</option>
+                <option value="I">Illusion</option>
+                <option value="N">Necromancy</option>
+                <option value="T">Transmutation</option>
+            </select>
+            <select id="classFilter">
+                <option value="all">All Classes</option>
+                <option value="Artificer">Artificer</option>
+                <option value="Bard">Bard</option>
+                <option value="Cleric">Cleric</option>
+                <option value="Druid">Druid</option>
+                <option value="Paladin">Paladin</option>
+                <option value="Ranger">Ranger</option>
+                <option value="Sorcerer">Sorcerer</option>
+                <option value="Warlock">Warlock</option>
+                <option value="Wizard">Wizard</option>
+            </select>
+            <select id="reprintFilter">
+                <option value="latest">Show Latest Version</option>
+                <option value="original">Show Original Version</option>
+                <option value="all">Show All Versions</option>
+            </select>
+        </div>
+        <div class="overflow-status">
+            <span class="status-icon">ℹ️</span>
+            <span class="overflow-count"></span>
+            <div class="tooltip">
+                <div class="tooltip-header">Cards with Overflowing Text:</div>
+                <div id="overflowList">No overflowing cards</div>
+            </div>
+        </div>
+        <div class="sort-controls">
+            <select id="sortBy">
+                <option value="name">Sort by Name ↓</option>
+                <option value="level">Sort by Level ↓</option>
+                <option value="school">Sort by School ↓</option>
+            </select>
+            <div class="ratio-controls">
+                <label for="cardWidth">Card Width (mm):</label>
+                <input type="number" id="cardWidth" value="120" min="40" max="200" step="1">
+                <label>Ratio:</label>
+                <div class="ratio-input-group">
+                    <input type="number" id="ratioWidth" value="7" min="1" max="20" step="1">
+                    <span>:</span>
+                    <input type="number" id="ratioHeight" value="12" min="1" max="20" step="1">
+                </div>
+            </div>
+            <button id="selectAllButton" class="select-all-button">Select All</button>
+            <div class="selection-status">
+                <span class="selection-count"></span>
+                <div class="tooltip">
+                    <div class="tooltip-header">Selected Spells:</div>
+                    <div id="selectionList">No spells selected</div>
+                </div>
+            </div>
+            <button id="exportButton" class="export-button" disabled>Export Selected Spells</button>
+            <button id="generatePdfButton" class="export-button" disabled>Generate PDF</button>
+        </div>
+    </div>
+    <div id="spellCards" class="spell-container"></div>
+    <script src="spellCards.js"></script>
+</body>
+</html>

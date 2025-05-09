@@ -1,0 +1,16 @@
+# Project specific
+5etools-src/
+midjourney/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependencies
+node_modules/ 
