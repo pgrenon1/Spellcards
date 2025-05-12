@@ -1,0 +1,300 @@
+.controls {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 100;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    flex: 1;
+    min-width: 300px;
+}
+
+.sort-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
+}
+
+.controls input,
+.controls select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.export-button, .select-all-button {
+    background-color: var(--header-color);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    margin-left: 5px;
+}
+
+.export-button:hover, .select-all-button:hover {
+    background-color: #a01010;
+}
+
+.export-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.select-all-button.all-selected {
+    background-color: #4CAF50;
+}
+
+.select-all-button.all-selected:hover {
+    background-color: #45a049;
+}
+
+.ratio-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 15px;
+}
+
+.ratio-controls label {
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.ratio-controls input {
+    width: 70px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.ratio-input-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ratio-input-group input {
+    width: 50px;
+}
+
+.ratio-input-group span {
+    font-weight: bold;
+    color: var(--header-color);
+}
+
+.ratio-controls input:focus {
+    outline: 2px solid var(--header-color);
+    outline-offset: -1px;
+}
+
+.overflow-status {
+    position: relative;
+    margin: 0 10px;
+    cursor: help;
+    display: flex;
+    align-items: center;
+}
+
+.overflow-count {
+    color: var(--header-color);
+    font-size: 0.9em;
+    font-weight: 500;
+    vertical-align: middle;
+}
+
+.status-icon {
+    font-size: 1.2em;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.status-icon.has-overflow {
+    color: var(--header-color);
+}
+
+.overflow-status .tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 5px;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: max-content;
+    max-width: 300px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.overflow-status:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltip-header {
+    color: var(--header-color);
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#overflowList {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.9em;
+}
+
+#overflowList .overflow-item {
+    padding: 2px 0;
+    color: #666;
+}
+
+#overflowList .overflow-item:not(:last-child) {
+    border-bottom: 1px dotted #eee;
+}
+
+.selection-status {
+    position: relative;
+    margin: 0 10px;
+    cursor: help;
+    display: flex;
+    align-items: center;
+}
+
+.selection-count {
+    color: var(--header-color);
+    font-size: 0.9em;
+    font-weight: 500;
+    vertical-align: middle;
+}
+
+.selection-status .tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 5px;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: max-content;
+    max-width: 300px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.selection-status:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.selection-status .tooltip::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-left: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+}
+
+#selectionList {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.9em;
+}
+
+#selectionList .selection-item {
+    padding: 2px 0;
+    color: #666;
+}
+
+#selectionList .selection-item:not(:last-child) {
+    border-bottom: 1px dotted #eee;
+}
+
+@media print {
+    .overflow-warning {
+        display: none;
+    }
+
+    .overflow-count {
+        display: none;
+    }
+
+    .selection-status {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-controls {
+        margin-bottom: 10px;
+    }
+
+    .sort-controls {
+        margin-left: 0;
+    }
+
+    .ratio-controls {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .filter-controls select,
+    .filter-controls input {
+        width: 100%;
+    }
+
+    .sort-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ratio-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ratio-input-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+} 

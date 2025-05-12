@@ -1,0 +1,39 @@
+<!-- Spell Card Template -->
+<div class="spell-card">
+    <div class="spell-header">
+        <div class="spell-name">{{name}}</div>
+        <p>{{levelText}}</p>
+    </div>
+    <div class="spell-stats">
+        <div class="stat-block">
+            <span class="stat-label">Casting Time</span>
+            <span class="stat-value">{{castingTime}}</span>
+        </div>
+        <div class="stat-block">
+            <span class="stat-label">Range</span>
+            <span class="stat-value">{{range}}</span>
+        </div>
+        <div class="stat-block">
+            <span class="stat-label">Components</span>
+            <span class="stat-value">{{components}}</span>
+        </div>
+        <div class="stat-block">
+            <span class="stat-label">Duration</span>
+            <span class="stat-value">{{duration}}</span>
+        </div>
+    </div>
+    <div class="description-container">
+        <div class="spell-description">
+            {{description}}
+        </div>
+        {{#if higherLevels}}
+        <div class="higher-levels">
+            <h3>At Higher Levels</h3>
+            <p>{{higherLevels}}</p>
+        </div>
+        {{/if}}
+    </div>
+    <div class="footer">
+        <div class="spell-source">{{source}}</div>
+    </div>
+</div> 

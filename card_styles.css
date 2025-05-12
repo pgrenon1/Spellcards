@@ -1,0 +1,307 @@
+@font-face {
+    font-family: 'Philosopher-Regular';
+    src: url('assets/fonts/Philosopher-Regular.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --card-width: 63mm;
+    --card-ratio: 1.75;
+    --card-height: calc(var(--card-width) * var(--card-ratio));
+    --frame-color: #8B0000;
+    --border-color: #DDD;
+    --border-radius: 5px;
+    --inside-margin: 0px 10px 10px 10px;
+    --inside-padding: 10px;
+    --inside-shadow: inset 0 0 5px #000000;
+    --font-fantasy: 'Philosopher-Regular';
+    --font-size-small: 0.5em;
+    --font-size-medium: 0.7em;
+    --font-size-large: 1.2em;
+}
+
+@media screen {
+    /* Scale for screen display while maintaining mm ratio */
+    :root {
+        --screen-scale: 3.78; /* 1mm ≈ 3.78px */
+        --card-display-width: calc(var(--card-width) * var(--screen-scale));
+        --card-display-height: calc(var(--card-height) * var(--screen-scale));
+    }
+
+    .spell-card {
+        width: var(--card-display-width);
+        height: var(--card-display-height);
+    }
+
+    .spell-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(var(--card-display-width), 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+}
+
+@media print {
+    /* Use actual millimeter measurements for printing */
+    .spell-card {
+        width: var(--card-width);
+        height: var(--card-height);
+    }
+
+    .spell-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(var(--card-width), 1fr));
+        gap: 5mm;
+        padding: 5mm;
+    }
+}
+
+.spell-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-width), 1fr));
+}
+
+.spell-card {
+    background-color: var(--frame-color);
+    background-image: url('assets/images/white-parchment-paper_53876-92954.avif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    overflow: hidden;
+    width: var(--card-width);
+    height: var(--card-height);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, width 0.3s ease-out, height 0.3s ease-out;
+    position: relative;
+}
+
+.spell-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--frame-color);
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.spell-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.spell-card.selected {
+    box-shadow: 0 0 0 3px var(--frame-color), 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.spell-card.selected::before {
+    content: "✓";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.spell-header {
+    color: white;
+    text-align: center;
+    padding: 5px;
+}
+
+.spell-name {
+    justify-content: center;
+    padding: 0px;
+    font-size: var(--font-size-large);
+    font-weight: bold;
+    margin: 0;
+    font-family: var(--font-fantasy);
+}
+
+.spell-header p {
+    margin: 0 0 0;
+    font-size: var(--font-size-medium);
+    font-family: var(--font-fantasy);
+}
+
+.spell-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: var(--inside-padding);
+    background-color: #f8f8f8;
+    margin: var(--inside-margin);
+    box-shadow: var(--inside-shadow);
+    border-radius: var(--border-radius);
+}
+
+.stat-block {
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-block:nth-child(odd) {
+    text-align: left;
+}
+
+.stat-block:nth-child(even) {
+    text-align: right;
+}
+
+.stat-label {
+    color: var(--frame-color);
+    font-weight: bold;
+    font-size: var(--font-size-medium);
+    text-transform: uppercase;
+    font-family: var(--font-fantasy);
+}
+
+.stat-value {
+    font-size: var(--font-size-medium);
+    margin-top: 2px;
+    font-family: var(--font-fantasy);
+}
+
+.description-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: var(--inside-margin);
+    background-color: white;
+    box-shadow: var(--inside-shadow);
+    border-radius: var(--border-radius);
+}
+
+.spell-description {
+    padding: var(--inside-padding);
+    font-size: var(--font-size-small);
+    line-height: 1.2;
+    overflow: hidden;
+    font-family: var(--font-fantasy);
+    flex: 1;
+}
+
+.spell-description p {
+    margin: 0.3em 0;
+}
+
+.spell-description p:first-child {
+    margin-top: 0;
+}
+
+.spell-description p:last-child {
+    margin-bottom: 0;
+}
+
+.spell-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+
+.spell-table caption {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    text-align: left;
+    font-family: var(--font-fantasy);
+}
+
+.spell-table th,
+.spell-table td {
+    padding: 0.5em;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.spell-table th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+    font-family: var(--font-fantasy);
+}
+
+.spell-entry-group {
+    margin: 1em 0;
+}
+
+.spell-entry-group h4 {
+    margin: 0 0 0.5em 0;
+    font-size: 1em;
+    font-family: var(--font-fantasy);
+}
+
+.higher-levels {
+    padding: 5px 15px;
+    margin-top: auto;
+}
+
+.higher-levels h3 {
+    color: var(--frame-color);
+    margin: 0 0 5px;
+    font-size: var(--font-size-medium);
+    text-transform: uppercase;
+    font-family: var(--font-fantasy);
+}
+
+.higher-levels p {
+    margin: 0;
+    font-size: var(--font-size-small);
+    font-family: var(--font-fantasy);
+}
+
+.footer {
+    padding: 8px 10px;
+    font-size: var(--font-size-medium);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.spell-source {
+    color: white;
+    font-style: italic;
+    padding-top: 4px;
+    padding-right: 4px;
+    font-size: var(--font-size-small);
+    vertical-align: middle;
+    text-align: right;
+    font-family: var(--font-fantasy);
+}
+
+.class-tag {
+    color: white;
+    padding: 2px 8px;
+    border-radius: 5px;
+    margin-right: 2px;
+    font-size: var(--font-size-small);
+    vertical-align: middle;
+    font-family: var(--font-fantasy);
+}
+
+.card-overflow-warning {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 1.2em;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+@media print {
+    .card-overflow-warning {
+        display: none;
+    }
+} 

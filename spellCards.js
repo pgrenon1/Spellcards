@@ -5,6 +5,7 @@ class SpellCard {
         this.school = this.getSchool(spellData.school || '');
         this.castingTime = this.formatTime(spellData.time || []);
         this.range = this.formatRange(spellData.range || {});
+        this.materialComponent = this.getMaterialComponent(spellData.components || {});
         this.components = this.formatComponents(spellData.components || {});
         this.duration = this.formatDuration(spellData.duration || []);
         this.description = this.formatDescription(spellData.entries || []);
@@ -12,6 +13,12 @@ class SpellCard {
         this.classes = this.getSpellClasses(classData);
         this.source = spellData.source || '';
         this.selected = false;
+    }
+
+    capitalizeFirstLetter(str) 
+    {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
     getSchool(school) {
@@ -37,19 +44,22 @@ class SpellCard {
     formatRange(rangeData) {
         if (!rangeData.distance) return "Self";
         const distance = rangeData.distance;
-        return `${distance.amount || 0} ${distance.type || 'feet'}`;
+        return `${distance.amount || ""} ${this.capitalizeFirstLetter(distance.type || 'feet')}`;
+    }
+
+    getMaterialComponent(compData) {
+        if (compData.m && typeof compData.m === 'string') 
+        {
+            return compData.m;
+        }
+        return null;
     }
 
     formatComponents(compData) {
         const components = [];
         if (compData.v) components.push('V');
         if (compData.s) components.push('S');
-        if (compData.m) {
-            components.push('M');
-            if (typeof compData.m === 'string') {
-                components.push(`(${compData.m})`);
-            }
-        }
+        if (compData.m) components.push('M');
         return components.join(' ');
     }
 
@@ -60,10 +70,21 @@ class SpellCard {
         if (duration.type === 'instant') return "Instantaneous";
         
         const time = duration.duration || {};
-        let result = `${time.amount || 1} ${time.type || 'round'}`;
-        if (duration.concentration) {
-            result = `Concentration, up to ${result}`;
+        let result = `${time.amount || 1} ${time.type || 'round'}${time.amount === 1 ? '' : 's'}`;
+        
+        if (duration.concentration) 
+        {
+            if (time.type === 'minute') 
+            {
+                const amount = time.amount || 1;
+                result = `Conc. ${amount} min${amount === 1 ? '' : 's'}`;
+            }
+            else 
+            {
+                result = `Conc. ${result}`;
+            }
         }
+        
         return result;
     }
 
@@ -83,7 +104,7 @@ class SpellCard {
             .replace(/{@sense ([^}]+)}/g, (match, p1) => {
                 return '<strong>' + 
                     p1.split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .map(word => this.capitalizeFirstLetter(word))
                         .join(' ') + 
                     '</strong>';
             })
@@ -95,7 +116,7 @@ class SpellCard {
             .replace(/{@filter ([^}|]+)(?:\|[^}]+)?}/g, (match, p1) => {
                 return '<strong>' + 
                     p1.split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .map(word => this.capitalizeFirstLetter(word))
                         .join(' ') + 
                     '</strong>';
             })
@@ -107,7 +128,7 @@ class SpellCard {
             .replace(/{@adventure ([^}|]+)(?:\|[^}]+)?}/g, (match, p1) => {
                 return '<strong>' + 
                     p1.split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .map(word => this.capitalizeFirstLetter(word))
                         .join(' ') + 
                     '</strong>';
             })
@@ -116,7 +137,7 @@ class SpellCard {
             .replace(/{@i ([^}]+)}/g, (match, p1) => {
                 return '<i>' + 
                     p1.split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .map(word => this.capitalizeFirstLetter(word))
                         .join(' ') + 
                     '</i>';
             })
@@ -153,7 +174,7 @@ class SpellCard {
             .replace(/{@quickref [^}]+\|+([^|}]+)}/g, (match, p1) => {
                 return '<strong>' + 
                     p1.split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .map(word => this.capitalizeFirstLetter(word))
                         .join(' ') + 
                     '</strong>';
             })
@@ -192,26 +213,40 @@ class SpellCard {
             .replace(/<strong>([^<]+)<\/strong>/g, (match, p1) => {
                 return '<strong>' + 
                     p1.split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .map(word => this.capitalizeFirstLetter(word))
                         .join(' ') + 
                     '</strong>';
             });
     }
 
     formatDescription(entries) {
-        if (Array.isArray(entries)) {
+        let description = '';
+        
+        // Add material component at the top if it exists
+        if (this.materialComponent) 
+        {
+            description = `<p><strong>Materials:</strong> ${this.sanitizeDescription(this.materialComponent)}</p>\n\n`;
+        }
+        
+        if (Array.isArray(entries)) 
+        {
             // Handle arrays of text or objects
-            return entries.map(entry => {
-                if (typeof entry === 'string') {
+            description += entries.map(entry => {
+                if (typeof entry === 'string') 
+                {
                     return this.sanitizeDescription(entry);
-                } else if (entry.type === 'list') {
+                } 
+                else if (entry.type === 'list') 
+                {
                     // Handle bullet point lists
                     return '<ul>' + 
                         entry.items.map(item => 
                             `<li>${this.sanitizeDescription(item)}</li>`
                         ).join('') + 
                         '</ul>';
-                } else if (entry.type === 'table') {
+                } 
+                else if (entry.type === 'table') 
+                {
                     // Handle tables
                     return '<table class="spell-table">' +
                         (entry.caption ? `<caption>${this.sanitizeDescription(entry.caption)}</caption>` : '') +
@@ -223,7 +258,8 @@ class SpellCard {
                             '<tr>' + 
                             row.map(cell => {
                                 // Handle cell content that might be an entries object
-                                if (typeof cell === 'object' && cell.type === 'entries') {
+                                if (typeof cell === 'object' && cell.type === 'entries') 
+                                {
                                     return `<td>${this.formatDescription(cell.entries)}</td>`;
                                 }
                                 return `<td>${this.sanitizeDescription(String(cell))}</td>`;
@@ -231,20 +267,29 @@ class SpellCard {
                             '</tr>'
                         ).join('') +
                         '</table>';
-                } else if (entry.type === 'entries') {
+                } 
+                else if (entry.type === 'entries') 
+                {
                     // Handle named entry groups
                     return `<div class="spell-entry-group">
-                        <h4>${entry.name}</h4>
+                        <h4>${this.capitalizeFirstLetter(entry.name)}</h4>
                         ${this.formatDescription(entry.entries)}
                     </div>`;
-                } else if (entry.type === 'quote') {
+                } 
+                else if (entry.type === 'quote') 
+                {
                     // Handle quotes - render the quoted text in italics
                     return `<i>${this.formatDescription(entry.entries)}</i>`;
                 }
                 return this.sanitizeDescription(JSON.stringify(entry));
             }).join('\n\n');
+        } 
+        else 
+        {
+            description += this.sanitizeDescription(String(entries));
         }
-        return this.sanitizeDescription(String(entries));
+        
+        return description;
     }
 
     formatHigherLevels(higherLevel) {
@@ -271,7 +316,7 @@ class SpellCard {
         return Array.from(uniqueClasses).sort();
     }
 
-    createCardElement() {
+    async createCardElement() {
         const card = document.createElement('div');
         card.className = 'spell-card';
         
@@ -279,43 +324,21 @@ class SpellCard {
                           this.level === 3 ? "3rd-level" : 
                           `${this.level}th-level`;
         
-        card.innerHTML = `
-            <div class="spell-header">
-                <h2>${this.name}</h2>
-                <p>${this.level === 0 ? 'Cantrip' : `${spellLevel} ${this.school.toLowerCase()}`}</p>
-            </div>
-            <div class="spell-stats">
-                <div class="stat-block">
-                    <span class="stat-label">Casting Time</span>
-                    <span class="stat-value">${this.castingTime}</span>
-                </div>
-                <div class="stat-block">
-                    <span class="stat-label">Range</span>
-                    <span class="stat-value">${this.range}</span>
-                </div>
-                <div class="stat-block">
-                    <span class="stat-label">Components</span>
-                    <span class="stat-value">${this.components}</span>
-                </div>
-                <div class="stat-block">
-                    <span class="stat-label">Duration</span>
-                    <span class="stat-value">${this.duration}</span>
-                </div>
-            </div>
-            <div class="spell-description">
-                ${this.description.split('\n\n').map(p => `<p>${p}</p>`).join('')}
-            </div>
-            ${this.higherLevels ? `
-                <div class="higher-levels">
-                    <h3>At Higher Levels</h3>
-                    <p>${this.higherLevels}</p>
-                </div>
-            ` : ''}
-            <div class="spell-classes">
-                <div class="spell-class-list">${this.classes.map(c => `<span class="class-tag">${c}</span>`).join('')}</div>
-                <div class="spell-source">${this.source}</div>
-            </div>
-        `;
+        const template = await this.loadTemplate();
+        const templateData = {
+            name: this.name,
+            levelText: this.level === 0 ? 'Cantrip' : `${spellLevel} ${this.school.toLowerCase()}`,
+            castingTime: this.castingTime,
+            range: this.range,
+            components: this.components,
+            duration: this.duration,
+            description: this.description.split('\n\n').map(p => `<p>${p}</p>`).join(''),
+            higherLevels: this.higherLevels,
+            classTags: this.classes.map(c => `<span class="class-tag">${c}</span>`).join(''),
+            source: this.source
+        };
+        
+        card.innerHTML = this.fillTemplate(template, templateData);
         
         // Add click handler for selection
         card.addEventListener('click', () => {
@@ -326,6 +349,30 @@ class SpellCard {
         });
         
         return card;
+    }
+
+    async loadTemplate() {
+        try {
+            const response = await fetch('card.html');
+            return await response.text();
+        } catch (error) {
+            console.error('Error loading template:', error);
+            return ''; // Return empty string if template loading fails
+        }
+    }
+
+    fillTemplate(template, data) {
+        // First handle conditional sections
+        let result = template.replace(/\{\{#if ([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g, (match, condition, content) => {
+            return data[condition] ? content : '';
+        });
+        
+        // Then handle regular replacements
+        result = result.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
+            return data[key] || '';
+        });
+        
+        return result;
     }
 
     toJSON() {
@@ -543,15 +590,18 @@ function updateOverflowStatus() {
     }
 }
 
-function renderSpellCards(spells) {
+async function renderSpellCards(spells) {
     const container = document.getElementById('spellCards');
     container.innerHTML = '';
     
     window.allSpellCards = spells.map(({spellData, classData}) => new SpellCard(spellData, classData));
-    window.allSpellCards.forEach(spell => {
-        const card = spell.createCardElement();
-        container.appendChild(card);
-    });
+    
+    // Create all cards in parallel
+    const cardPromises = window.allSpellCards.map(spell => spell.createCardElement());
+    const cards = await Promise.all(cardPromises);
+    
+    // Append all cards to the container
+    cards.forEach(card => container.appendChild(card));
     
     // Add a small delay to ensure the DOM has updated
     setTimeout(updateOverflowStatus, 100);
@@ -753,7 +803,7 @@ async function initialize() {
     const reprintFilter = document.getElementById('reprintFilter');
     const sortBySelect = document.getElementById('sortBy');
     
-    function updateDisplay() {
+    async function updateDisplay() {
         const filteredAndSortedSpells = filterAndSortSpells(
             spells,
             searchInput.value,
@@ -763,7 +813,7 @@ async function initialize() {
             sortBySelect.value,
             reprintFilter.value
         );
-        renderSpellCards(filteredAndSortedSpells);
+        await renderSpellCards(filteredAndSortedSpells);
         updateSortDisplay();
         updateSelectAllButton();
     }
@@ -809,7 +859,7 @@ async function initialize() {
     
     // Initial status updates
     updateSelectionStatus();
-    updateDisplay();
+    await updateDisplay();
 }
 
 // Start the application

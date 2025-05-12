@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D&D 5E Spell Cards</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="card_styles.css">
+    <link rel="stylesheet" href="control_styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -53,15 +55,15 @@
                 <option value="all">Show All Versions</option>
             </select>
         </div>
-        <div class="overflow-status">
-            <span class="status-icon">ℹ️</span>
-            <span class="overflow-count"></span>
-            <div class="tooltip">
-                <div class="tooltip-header">Cards with Overflowing Text:</div>
-                <div id="overflowList">No overflowing cards</div>
-            </div>
-        </div>
         <div class="sort-controls">
+            <div class="overflow-status">
+                <span class="status-icon">ℹ️</span>
+                <span class="overflow-count"></span>
+                <div class="tooltip">
+                    <div class="tooltip-header">Cards with Overflowing Text:</div>
+                    <div id="overflowList">No overflowing cards</div>
+                </div>
+            </div>
             <select id="sortBy">
                 <option value="name">Sort by Name ↓</option>
                 <option value="level">Sort by Level ↓</option>
